@@ -18,10 +18,36 @@ let cargarDatos = () => {
     .catch(console.error);
 }
 
+let select = document.querySelector('div.input-group > select');
+select.addEventListener('change', function() {
+    fetch('https://dataserverdaw.herokuapp.com/escritores/frases')
+        .then(response => response.json())
+        .then(data => {                
+            let frases = data["frases"];
+            let plantilla, texto, autor;
 
+            document.getElementById('frases').innerHTML = '';
 
-    
+            frases.filter(frase => frase['id_autor'] == select.value)
+                .forEach(frase => {
+                    texto = frase['texto'];                        
+                    autor = this.options[select.selectedIndex].text;
+                    plantilla = `<div class="col-lg-3">
+                                    <div class="test-inner ">
+                                        <div class="test-author-thumb d-flex">
+                                            <div class="test-author-info">
+                                                <h4>${autor}</h4>                                            
+                                            </div>
+                                        </div>
+                                        <span>${texto}</span>
+                                        <i class="fa fa-quote-right"></i>
+                                    </div>
+                                </div>`;
+                    document.querySelector('div#frases').innerHTML += plantilla;
+                });
+        }).catch(console.error);
+});
+
 window.addEventListener('DOMContentLoaded', (event) => {
     cargarDatos()
 });
-
